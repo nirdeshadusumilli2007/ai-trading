@@ -24,14 +24,14 @@ Then enter `/mcp` in Claude Code, select `robinhood-trading`, and authenticate
 
 ### 2. Set an EDGAR User-Agent
 
-The SEC requires a descriptive User-Agent with contact info on automated requests:
+The SEC requires a descriptive User-Agent with contact info on automated requests.
+Claude Code sessions in this repo already get one from `.claude/settings.json`
+(`env.EDGAR_USER_AGENT`), and `edgar.py` carries the same value as its built-in
+default. To use a different contact, edit both, or override per-shell:
 
 ```
 export EDGAR_USER_AGENT="Your Name you@example.com"
 ```
-
-(In a Claude Code remote environment, set this as an environment variable in the
-environment configuration.)
 
 ### 3. Run the routine
 
