@@ -187,8 +187,15 @@ volume + breakout check → MAs/RSI/MACD → sector strength → options activit
   is the strongest possible setup.
 - not already holding the ticker, and no open order for it
 - currently fewer than 10 total positions
-- position size = 5% of total account value, as a dollar-amount market order in regular
-  hours; minimum $1; never exceed available buying power
+- position size is at the agent's discretion, scaled to signal strength as a % of
+  TOTAL account value (owner instruction 2026-07-08 — no fixed 5% rule):
+  - Strategy A: conviction 7 → ~8%; conviction 8 → ~10%; conviction 9–10 → ~15%
+  - Strategy B: score 10–11 → ~8%; score 12–13 → ~12%; score 14–15 → ~15%
+  - convergence (qualifies under BOTH strategies) → up to 20%
+  - hard cap: never more than 20% of total account value in one name at entry;
+    minimum $5; never exceed available buying power (fund from the SPY sweep per
+    Step 4b when cash is short)
+  - placed as a dollar-amount market order in regular hours
 - `review_equity_order` first; skip the ticker if the review returns any blocking alert
 - then `place_equity_order` with a fresh UUID ref_id
 - record in the ledger: entry_date (today, ISO), planned_hold_days (1–60, set from the
@@ -209,7 +216,7 @@ ref_id). Record it in the ledger tagged `"strategy": "SWEEP"`.
   just enough of the SPY sweep (only if it has been held ≥ 1 full calendar day) to
   fund the buy, then place the buy. Never sell strategy positions early to fund a
   sweep, and never skip a qualified strategy buy to preserve the sweep.
-- The 5%-per-position cap applies to single-name strategy picks only, NOT to the
+- The single-name position cap (Step 4) applies to strategy picks only, NOT to the
   broad-market sweep.
 
 ## Step 5 — log
@@ -224,4 +231,5 @@ repeatedly, log the failure and stop — never improvise around a broker error.
 - Equities only, account 953941390 only.
 - Never sell a position the same day it was bought — minimum hold is 1 full calendar
   day (no day trading, ever).
-- Max 10 positions; 5% per position; −15% stop; 60-day max hold.
+- Max 10 positions; max 20% of account per single name at entry (sizing otherwise
+  at agent discretion, scaled to signal strength); −15% stop; 60-day max hold.
