@@ -1,1 +1,33 @@
-[]
+[
+  {
+    "ticker": "NVDA",
+    "entry_date": "2026-07-08",
+    "shares": 0.025338,
+    "avg_price": 197.3299,
+    "cost_basis": 5.0,
+    "planned_hold_days": 5,
+    "thesis": "User-directed test buy to verify order pipeline (not signal-driven); Congress PTR context: Rep. Cleo Fields NVDA $1M-5M buy disclosed 7/1."
+  },
+  {
+    "ticker": "ALMS",
+    "entry_date": "2026-07-08",
+    "shares": 0.167676,
+    "avg_price": 29.8194,
+    "cost_basis": 5.0,
+    "planned_hold_days": 15,
+    "strategy": "B",
+    "score": "12/15",
+    "target": 34.70,
+    "stop": 27.40,
+    "thesis": "Strategy B momentum: breakout above 15d range on 2.4x volume; Ph3 ONWARD1/2 psoriasis win + $300M raise closed + Russell growth-index adds; above 50/200 SMA, strong biotech sector (Vertex-CRNX $10B buyout tailwind), bullish MACD. 2:1 R:R."
+  },
+  {
+    "ticker": "SPY",
+    "entry_date": "2026-07-08",
+    "shares": 0.12168,
+    "avg_price": 742.1899,
+    "cost_basis": 90.31,
+    "strategy": "SWEEP",
+    "thesis": "No-idle-cash sweep per owner standing instruction 2026-07-08: all uninvested cash parked in SPY; sold down only to fund qualified strategy buys (after min hold)."
+  }
+]
