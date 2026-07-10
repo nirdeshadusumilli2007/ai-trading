@@ -24,10 +24,14 @@
   {
     "ticker": "SPY",
     "entry_date": "2026-07-08",
-    "shares": 0.02476,
-    "avg_price": 741.92,
-    "cost_basis": 18.37,
+    "shares": 0.121079,
+    "avg_price": 750.42,
+    "cost_basis": 90.85,
     "strategy": "SWEEP",
-    "thesis": "No-idle-cash sweep per owner standing instruction 2026-07-08: all uninvested cash parked in SPY; sold down only to fund qualified strategy buys (after min hold). RECONCILED 2026-07-10 to broker fill history: an unlogged 2026-07-09 session sold 0.09692 sh across 4 orders ($72.50 total) via the agentic connector, but no offsetting buy followed and no ledger/log entry was ever committed (container likely ended mid-run) -- $72.48 sat idle in cash until this reconciliation."
+    "lots": [
+      {"entry_date": "2026-07-08", "shares": 0.02476},
+      {"entry_date": "2026-07-10", "shares": 0.096319, "note": "min hold until 2026-07-11"}
+    ],
+    "thesis": "No-idle-cash sweep per owner standing instruction 2026-07-08: uninvested cash parked in SPY; sold down only to fund qualified strategy buys (after min hold). RECONCILED 2026-07-10 13:35 ET run: an out-of-session agentic order (6a50f44d, 09:31:57 ET 2026-07-10) re-swept the idle $72.48 from the 2026-07-09 unlogged sells back into SPY (0.096319 sh @ $752.49) with no signal scan preceding it; broker position now 0.121079 sh @ $750.42 avg. Owner instruction 2026-07-10: never sweep to SPY before the same-session strategy scans have run."
   }
 ]

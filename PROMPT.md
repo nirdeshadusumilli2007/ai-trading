@@ -209,6 +209,12 @@ strategy buys each cycle, if remaining cash > $1, sweep the FULL remaining buyin
 power into **SPY** as a dollar-amount market order (regular hours, fresh UUID
 ref_id). Record it in the ledger tagged `"strategy": "SWEEP"`.
 
+- **Research first, SPY last (owner instruction 2026-07-10): NEVER buy SPY until
+  the full Strategy A and Strategy B scans have run in the SAME session and found
+  no qualified candidate for the cash — the priority is stocks with strong 1–7 day
+  upside, not the index. A standalone sweep with no preceding signal scan is a
+  violation.**
+
 - The sweep position has no target/stop/planned-hold and is EXEMPT from the
   max-10-position count and the exit rules in Step 1 (never sell it on the −15%
   stop or 60-day rule). The no-day-trade min hold still applies.
