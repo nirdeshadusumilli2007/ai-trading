@@ -42,7 +42,11 @@ instruction 2026-07-10):**
 ## Step 1 — manage exits FIRST (this enforces "no day trading")
 
 Read the position ledger (`data/robinhood_positions.json` if present; otherwise
-reconstruct entry dates from `get_equity_orders` fill history). For each open position:
+reconstruct entry dates from `get_equity_orders` fill history). Schema: a top-level
+object with `positions` (the array of open positions, format as before) and
+`options_cash_allocation` (the dedicated options cash pool balance used for Step 3C
+sizing — see there for how it's funded and drawn down). For each open position in
+`positions`:
 
 - Compute calendar days held. **If held < 1 full calendar day (i.e., bought today),
   do nothing with it — hard no-day-trade rule, no early exit for any reason,
@@ -249,15 +253,26 @@ strangles, iron condors, butterflies, calendar spreads, or any multi-leg strateg
 isn't fully cash- or share-collateralized leg-by-leg. If it needs margin or has
 undefined risk, it is out of scope — no exceptions.
 
-**Sizing (stricter than equities — owner instruction 2026-07-10):**
-- Long calls/long puts/protective puts: premium × 100 × contracts ≤ 8% of total
-  account value at entry; hard cap 10%. Skip the trade if the cheapest liquid
-  contract that expresses the thesis costs more than the cap — never oversize.
-- Cash-secured puts: strike × 100 × contracts (the collateral) ≤ 8% of total account
-  value at entry; hard cap 10%.
+**Sizing — dedicated options cash pool (owner instruction 2026-07-10):** Options are
+sized against a dedicated **options cash allocation** tracked in the ledger as
+`options_cash_allocation` (owner deposits into this deliberately and explicitly —
+e.g. the $50 added 2026-07-10 — never funded from equity-strategy capital or the
+SPY sweep). Sizing caps below are a % of the *current remaining*
+`options_cash_allocation`, NOT total account value:
+- Long calls/long puts/protective puts: premium × 100 × contracts ≤ 80% of the
+  remaining options_cash_allocation per trade; hard cap 100% (the full allocation
+  may go into one contract, never more).
+- Cash-secured puts: strike × 100 × contracts (the collateral) ≤ 80% of the
+  remaining options_cash_allocation; hard cap 100%.
 - Covered calls / collars: no new capital at risk beyond the shares already owned
-  (which were already sized under the equity rules in Step 4) plus, for a collar,
-  the protective put's premium — keep that put premium small (≤ 3% of account value).
+  (sized under the equity rules in Step 4); a collar's protective put premium is
+  sized against options_cash_allocation the same way as a long put above.
+- Skip the trade if the cheapest liquid contract expressing the thesis costs more
+  than the current remaining options_cash_allocation — never oversize, and never
+  draw from equity capital or the SPY sweep to cover the shortfall.
+- When an option position closes (sold to close, expires, or is assigned), the
+  resulting cash returns to `options_cash_allocation` — it stays earmarked for the
+  next options trade, it does not fall into general sweep-eligible cash.
 - Options positions count toward the same max-10-total-positions cap as equities.
   Not already holding an option on that exact contract, and no open order for it.
 
@@ -338,6 +353,8 @@ repeatedly, log the failure and stop — never improvise around a broker error.
   only in the sense that it is a hard deadline, never an excuse to close early for
   any other reason.
 - Max 10 positions total (equities + options combined); max 20% of account per single
-  equity name at entry; options sized per Step 3C (≤ 8% target / 10% hard cap, never
-  oversized to fit a contract); −15% stop and 60-day max hold for equities; expiration
+  equity name at entry; options sized per Step 3C (≤ 80% target / 100% hard cap of
+  the remaining `options_cash_allocation`, never total account value, never oversized
+  to fit a contract, never funded from equity capital or the SPY sweep); −15% stop
+  and 60-day max hold for equities; expiration
   discipline (Step 1B) for options.
