@@ -163,6 +163,36 @@ Members of Congress must publicly disclose trades within 45 days. Via web fetch/
 pull the most recent PTR disclosures (House Clerk `disclosures-clerk.house.gov`, Senate
 `efdsearch.senate.gov`, or a reputable public aggregator). Keep recent BUY/purchase
 disclosures in liquid US-listed stocks.
+- **Read every PTR for these specific fields (owner instruction 2026-07-10, from a
+  STOCK Act disclosure guide) — a ticker and a "buy" label alone are not enough:**
+  - **Transaction type**: only `Purchase (P)` is a bullish signal. `Sale` and
+    `Sale (Partial)` are exits (partial sales often mean profit-taking, not
+    reversal — don't read them as bearish on their own either). `Exchange` (e.g.
+    fund share-class conversions) is not a tradeable signal at all — discard it.
+  - **Asset type**: only `ST` (stock/equity) is the primary signal. `OP` (options)
+    disclosures are much noisier — the PTR often omits strike/expiry/call-vs-put,
+    so treat these as weak/uninterpretable unless the underlying detail is
+    otherwise available. `MF` (mutual fund) is almost always portfolio
+    rebalancing noise, not a single-company signal — discard. `OT` (bonds, REITs,
+    sometimes ETFs) needs the description field read carefully before use.
+  - **Amount range code → position-size proxy**: PTRs disclose a dollar *range*,
+    not an exact amount (A: $1,001–15,000 up to H: over $5,000,000). Use the
+    range midpoint as a rough position-size weight — a Range G/H trade
+    ($1M+) is a materially stronger signal than a Range A trade ($1K–15K); don't
+    treat all disclosed purchases as equal just because they're all "a buy."
+  - **Disclosure lag (the transaction date vs. the filing date)**: a short lag
+    (filed within ~10 days of the trade) is itself a bullish tell — a member with
+    nothing to hide files quickly; a filing near the 45-day statutory deadline is
+    a meaningfully weaker signal. This is a real, documented effect (not just
+    intuition) and should raise or lower conviction accordingly.
+  - **Bipartisan clustering**: members from *both* parties buying the same ticker
+    within a ~30-day window is a much stronger signal than same-party clustering
+    or a single member's buy — cross-party corroboration is the single strongest
+    filter available in this signal source.
+  - **Committee relevance**: a member's purchase in a sector their committee
+    assignment actually oversees (e.g. an Armed Services member buying a defense
+    contractor, or a Financial Services member buying a bank) scores higher than
+    the same trade by a member with no sector connection.
 
 **C. Deal, contract & policy catalysts (public news only).**
 Via web search, look for freshly announced, already-public catalysts: government
@@ -179,8 +209,32 @@ the signal's own merits:
 - **Form 4:** high when a CEO/CFO makes a large discretionary open-market buy that
   meaningfully increases their stake. Low for 10b5-1 pre-planned buys (check footnotes),
   token/PR-sized buys, tiny illiquid names, or buys tied to comp/placements.
+  - **The Becker/SVB trap (owner instruction 2026-07-10, from an annotated Form 4
+    case study): an option exercise followed by a same-day sale is NOT a
+    discretionary buy signal, even though the filing shows an acquisition.** The
+    canonical example: an executive exercised options to buy shares at $105 and
+    sold the same shares the same day around $285 — the filing technically shows
+    a large-dollar "purchase," but it's compensation monetization (the executive
+    ended the day owning the same number of shares they started with), not
+    conviction. Always check whether an acquisition transaction (codes like `M`/
+    option exercise or `A`/award) is paired with a same-day or near-same-day
+    disposal of the same share count — if so, treat it as noise, not a buy
+    signal, regardless of the dollar figure.
+  - **10b5-1 plan timing**: footnotes referencing a Rule 10b5-1 trading plan mean
+    the trade was scheduled in advance, not a fresh discretionary decision — check
+    the gap between the plan's adoption date and the execution date if given (SEC
+    rules require ≥90 days for plans adopted after April 2023); a short or
+    unclear gap deserves extra skepticism, a long-standing plan executed on
+    schedule deserves low conviction regardless of the dollar amount.
+  - **Base-rate check**: a company/insider with a very high historical Form 4
+    filing frequency (routine comp-driven activity) needs the pattern read in
+    aggregate (net dollar buys vs. sells over time), not reacted to on any single
+    filing in isolation.
 - **Congress:** high when multiple members, or members on a relevant committee, buy the
-  same name recently; treat single small disclosures as weak.
+  same name recently; treat single small disclosures as weak. Layer in the field-level
+  read above (transaction type, asset type, range-code size, disclosure lag,
+  bipartisan clustering, committee relevance) rather than conviction-scoring off the
+  ticker and "buy" label alone.
 - **Catalyst:** high when the catalyst is concrete, material to the specific company,
   and the market has not already fully priced it (check the recent price move with
   `get_equity_historicals`/quotes). Low for vague, already-run, or sentiment-only items.
@@ -413,13 +467,44 @@ SPY sweep). Sizing caps below are a % of the *current remaining*
 - Options positions count toward the same max-10-total-positions cap as equities.
   Not already holding an option on that exact contract, and no open order for it.
 
-**Process**: `get_option_chains` for the underlying → pick the nearest liquid
-strike/expiration that fits the thesis and sizing cap (avoid this week's expiration;
-prefer enough time value that Step 1B's 5-day-before-expiration rule doesn't force an
-immediate close) → `review_option_order` first, skip on any blocking alert →
-`place_option_order` with a fresh UUID ref_id → record in the ledger: strategy "C",
-structure (e.g. "long call"), underlying, strike(s), expiration, contracts, premium
-paid/received, entry_date, target, stop, and which Strategy A/B signal it expresses.
+**Strike/expiration selection using the Greeks (owner instruction 2026-07-10, from
+options-pricing reference material).** An option's price = intrinsic value (how
+far ITM it already is) + speculative/time value (the market's bet it goes further
+ITM before expiry) — this is why premiums on the same stock vary hugely by strike
+and date, and why "nearest liquid strike" isn't specific enough on its own:
+- **Delta as both a probability proxy and a leverage dial.** Delta roughly
+  approximates the market-implied probability of finishing ITM (a 0.30 delta call
+  is priced as if it has roughly a 30% chance of being ITM at expiry). For a
+  directional long call/put expressing a Strategy A/B thesis, prefer a delta
+  roughly in the **0.30–0.55** range: high enough that a real move in the
+  underlying actually moves the option meaningfully, not so deep ITM that most of
+  the cost is intrinsic value bought at a premium multiplier close to just owning
+  the stock. Leverage on a given contract = `(delta × share price) / premium` —
+  a useful sanity-check number for the ledger thesis (e.g. "17:1 leveraged" tells
+  you a small adverse move in the stock is a large percentage move in the
+  option).
+- **Implied volatility drives cost more than people expect — check it before
+  picking a strike.** A stock with very high IV (as seen firsthand with ALMS,
+  where IV was 140–176% and even the furthest-OTM 6-week call still cost $250)
+  will price every strike expensively regardless of distance from the money —
+  this is exactly why cheap, liquid, low-IV names (like NIO's ~68% IV) are what
+  make a contract fit a small sizing cap, not just a cheap share price alone.
+  Check `implied_volatility` on the option quote before assuming a "far OTM"
+  strike will be cheap.
+- **Theta accelerates as expiration nears — don't enter already inside the decay
+  zone.** Time decay is not linear; it speeds up in an option's final weeks. Step
+  1B's 5-day-before-expiration close rule is a hard backstop, not a target —
+  prefer entering with at least **30–45 days** to expiration so the position has
+  room to work before decay accelerates, rather than picking the nearest weekly
+  expiration just because it's cheaper.
+
+**Process**: `get_option_chains` for the underlying → pick a strike/expiration that
+fits the thesis, the delta/IV/theta guidance above, and the sizing cap (avoid this
+week's expiration; prefer ≥30-45 days to expiration) → `review_option_order` first,
+skip on any blocking alert → `place_option_order` with a fresh UUID ref_id → record
+in the ledger: strategy "C", structure (e.g. "long call"), underlying, strike(s),
+expiration, contracts, premium paid/received, delta and implied volatility at entry,
+entry_date, target, stop, and which Strategy A/B signal it expresses.
 
 ## Step 4 — buy rules (all must hold)
 
