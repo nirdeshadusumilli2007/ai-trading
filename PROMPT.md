@@ -18,6 +18,17 @@ folded into Step 3B below. Neither source covered fundamentals ratios, insider/
 Congressional-disclosure interpretation, or order-book mechanics in any depth, so
 Strategy A's rules are unchanged by this addition.
 
+A second document batch (2026-07-10, same-day): two indicator-focused academic
+papers (an IJSDR single-stock case study and an IJEMR market-indicators survey),
+a Medium buy-signal-algorithm article, and a completeness re-sweep of the two
+education PDFs above. These are LOW-evidence teaching sources (no rigorous
+backtests), so their material was folded in only as parameter pinning, extra
+corroborating tells, and money-management rules — never as new standalone entry
+triggers — and their mean-reversion entry ideas (buy oversold RSI/stochastic
+bounces) were explicitly REJECTED as contrary to this system's buy-strength
+design. The one hard new rule they contributed is the 3% max capital-at-risk
+cap in B14.
+
 - **What technical analysis actually claims.** It uses only price and volume, never
   fundamentals, and its justification is behavioral, not causal: "patterns repeat
   because investors behave similarly in similar situations." It doesn't predict the
@@ -53,9 +64,10 @@ Strategy A's rules are unchanged by this addition.
   screens for average volume and price floors — it's a liquidity filter as much as a
   quality filter.
 - **Asymmetric risk/reward carries a system, not win rate.** A documented example from
-  one source: a moving-average-crossover system with only a 50% win rate was still
-  solidly profitable because winners were left to run (600/200/200 points) while
-  losers were cut small (breakeven/-35 points). The lesson generalizes directly to
+  one source: a moving-average-crossover system with only a 50% win rate (6 of 12
+  signals correct) was still solidly profitable because winners were left to run
+  (600/200/200/100 points across four winners) while losers were cut small
+  (breakeven/-35 points on the detailed false signals). The lesson generalizes directly to
   this account's existing 2:1 reward-to-risk requirement (B14/B13) — the win rate
   doesn't need to be high if losers are capped and winners aren't sold early.
 - **Discipline framing.** A trade should be closer to a binary decision — every
@@ -116,11 +128,53 @@ sizing — see there for how it's funded and drawn down). For each open position
     actions/technicals for each held position; sell early on a concrete, cited
     deterioration such as an earnings miss, a downgrade with a new price target
     below the current price, a negative FDA/regulatory outcome, a guidance cut, a
-    large cluster of insider selling, or a broken key technical level (e.g. below
-    both 50- and 200-day SMAs on volume). This is not license to churn on routine
+    large cluster of insider selling, a broken key technical level (e.g. below
+    both 50- and 200-day SMAs on volume), a completed bearish reversal pattern on
+    the daily chart (head-and-shoulders — among the most reliable reversal
+    patterns — double/triple top (a triple top only COMPLETES when price breaks
+    below the swing lows between the peaks — act on that break, not on the third
+    peak alone), rising wedge, descending-triangle breakdown, or a bearish
+    candlestick cluster at the highs such as an evening star, bearish engulfing,
+    dark cloud cover, three black crows, shooting star, gravestone doji, bearish
+    harami, or falling three methods, confirmed by the following session's
+    candle), or a
+    confirmed bearish momentum divergence on a mature winner (price making new
+    highs while 14-day RSI/MACD make clearly lower highs) — the divergence and
+    candlestick tells are corroborating evidence only, never a standalone reason
+    to sell. **Insider-sale nuance (added 2026-07-10, Jeng–Metrick–Zeckhauser
+    1999 + 2026 JRFM study): a single LARGE insider sale is the least informative
+    kind — stocks actually bounce UP for ~5 days after high-volume insider sales
+    (price-pressure recovery), and value-weighted insider selling predicts
+    nothing. The bearish pattern is many separate, smaller sales by multiple
+    insiders with no offsetting buys — "large cluster" means a cluster of
+    sellers, not one big block. Insider-sale signals are weaker still after the
+    2023 Rule 10b5-1 reform and near-uninformative for tech names — require
+    corroboration from another bearish finding.** This is not license to churn on routine
     volatility, a single modest insider sale, or short-term profit-taking impulses —
     require the same rigor as a Strategy A/B buy signal, just in reverse. Log the
     specific finding that drove the sell (or the finding that did NOT warrant one).
+- **Momentum-maturity tells (added 2026-07-10, second document batch —
+  corroborating evidence only, never a standalone sell; the primary action they
+  justify is tightening the recorded stop on a mature winner):**
+  - 14-day RSI dropping back BELOW 70 after an overbought excursion (the
+    re-cross down, not the 70 print itself, is the tell);
+  - RSI crossing down through 50 on a name that had been genuinely trending
+    (only meaningful where ADX ≥ 25 confirmed a real trend);
+  - the MACD histogram visibly shrinking toward zero across several sessions —
+    momentum fading before the lines even cross;
+  - a fast/slow moving-average crossover reversing after a long advance, or a
+    first decisive close below the long trend MA (e.g. 100-day) that contained
+    the whole run — while price holds above that long MA, the trend is intact
+    and the winner should be left to run;
+  - weekly AND daily stochastic (14,7,3) both in overbought territory (≥ 70–80)
+    with price sitting at a major resistance zone after an extended rally.
+- **Standing target order (added 2026-07-10):** once a position is ≥ 1 full
+  calendar day old and has a recorded Strategy B target, place (and maintain) a
+  good-til-canceled LIMIT SELL at the target so an intraday touch between cycles
+  actually takes the profit — cycle-time market-order checks alone miss
+  intraday spikes. Never place it on the entry day (no-day-trade rule), and
+  cancel/replace it whenever the ledger target changes or the position exits
+  another way.
 - Remove sold tickers from the ledger.
 
 ## Step 1B — manage OPTION exits (before any new options entry)
@@ -156,7 +210,14 @@ If the `edgar` helper is available, run:
 Otherwise fetch the EDGAR current-Form-4 atom feed
 (`https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&count=100&output=atom`,
 send a `User-Agent: Name email` header) and parse each filing's ownership XML for
-code-P buys. Only keep buys ≥ $100,000 total value.
+code-P buys. Only keep buys ≥ $100,000 total value (a noise filter only — conviction
+is scored on other dimensions in Step 3, not on raw dollars).
+- **Data hygiene (added 2026-07-10, from Jeng–Metrick–Zeckhauser 1999)**:
+  sanity-check each parsed filing's reported price against that day's actual
+  trading range (via historicals) — historically ~28% of Form 4s carried prices
+  outside the day's range, usually a miscoded date (filing date entered as the
+  transaction date). If the price doesn't fit the claimed date, re-derive the
+  transaction date before scoring freshness.
 
 **B. US Congress trades — STOCK Act Periodic Transaction Reports.**
 Members of Congress must publicly disclose trades within 45 days. Via web fetch/search,
@@ -176,15 +237,21 @@ disclosures in liquid US-listed stocks.
     rebalancing noise, not a single-company signal — discard. `OT` (bonds, REITs,
     sometimes ETFs) needs the description field read carefully before use.
   - **Amount range code → position-size proxy**: PTRs disclose a dollar *range*,
-    not an exact amount (A: $1,001–15,000 up to H: over $5,000,000). Use the
-    range midpoint as a rough position-size weight — a Range G/H trade
-    ($1M+) is a materially stronger signal than a Range A trade ($1K–15K); don't
-    treat all disclosed purchases as equal just because they're all "a buy."
+    not an exact amount. Full table (use the midpoint as a rough position-size
+    weight): A $1,001–15,000; B $15,001–50,000; C $50,001–100,000;
+    D $100,001–250,000; E $250,001–500,000; F $500,001–1,000,000;
+    G $1,000,001–5,000,000; H over $5,000,000. A Range G/H trade ($1M+) is a
+    materially stronger signal than a Range A trade ($1K–15K); don't treat all
+    disclosed purchases as equal just because they're all "a buy."
   - **Disclosure lag (the transaction date vs. the filing date)**: a short lag
     (filed within ~10 days of the trade) is itself a bullish tell — a member with
     nothing to hide files quickly; a filing near the 45-day statutory deadline is
     a meaningfully weaker signal. This is a real, documented effect (not just
-    intuition) and should raise or lower conviction accordingly.
+    intuition) and should raise or lower conviction accordingly — the source's
+    backtest of ~21,700 PTRs (2018–2026) found purchases disclosed within 10
+    days beat the S&P 500 by +2.88% over the following 60 days, vs. just +0.41%
+    for filings in the final week of the 45-day window. (Note the 60-day
+    measurement horizon matches this account's max hold exactly.)
   - **Bipartisan clustering**: members from *both* parties buying the same ticker
     within a ~30-day window is a much stronger signal than same-party clustering
     or a single member's buy — cross-party corroboration is the single strongest
@@ -193,6 +260,21 @@ disclosures in liquid US-listed stocks.
     assignment actually oversees (e.g. an Armed Services member buying a defense
     contractor, or a Financial Services member buying a bank) scores higher than
     the same trade by a member with no sector connection.
+  - **Member track record (added 2026-07-10, the source's fifth scoring
+    dimension)**: where obtainable (public aggregators publish per-member win
+    rates and average return vs. the S&P), weight the filer's history — a
+    purchase by a member with a documented record of beating the market is a
+    stronger signal than the identical purchase by a member with no edge; the
+    same trade means different things from different people.
+  - **Scope and price basis (added 2026-07-10)**: spouse and dependent-child
+    trades are disclosed under the same STOCK Act regime and count as valid
+    signals. Use the *transaction date* (the member's approximate cost basis)
+    for price context — if the stock has already run far above that basis by
+    the time the PTR is filed, part of the signal is already priced in; lower
+    conviction accordingly.
+  - **Never invert cluster logic**: group *selling* clusters are noisy
+    (rebalancing, profit-taking, liquidity) and are excluded from cluster
+    scoring — do not read a sell cluster as a bearish signal on its own.
 
 **C. Deal, contract & policy catalysts (public news only).**
 Via web search, look for freshly announced, already-public catalysts: government
@@ -230,6 +312,54 @@ the signal's own merits:
     filing frequency (routine comp-driven activity) needs the pattern read in
     aggregate (net dollar buys vs. sells over time), not reacted to on any single
     filing in isolation.
+  - **Signal freshness (added 2026-07-10, Jeng–Metrick–Zeckhauser 1999, 1975–96
+    Form 4 panel)**: the abnormal return after an insider buy is front-loaded —
+    roughly a quarter accrues in the first 5 trading days after the TRANSACTION
+    date and half within the first month; the remainder decays to zero by 6
+    months with no reversal. Score off the transaction date, not the filing
+    date: a code-P buy transacted within the last ~5 trading days gets full
+    conviction weight; 1–4 weeks old, reduced weight; more than ~2 months old,
+    treat as stale background context, not a fresh signal.
+  - **Size the buy relative to the company, not just dollars (same source)**:
+    for conviction, measure the purchase as a fraction of shares outstanding —
+    buys above roughly 0.03% of the company's equity historically earned 2–3×
+    the abnormal return of proportionally tiny buys. A $150k buy in a mega-cap
+    is proportionally trivial; the same dollars in a $300M company is strong.
+  - **Cluster rule (same source; mirrors the Congress bipartisan-cluster
+    rule)**: the strongest validated follower filter is multiple DISTINCT
+    insiders buying within a ~1-month window with no offsetting insider sales
+    in that window. Weight a 3+-insider cluster above any single buy of the
+    same total dollar size. Director and non-C-suite officer buys count fully
+    toward a cluster — insiders' own returns show directors/officers earn
+    abnormal returns indistinguishable from CEOs (directors are ~70% of all
+    insider-buy dollar value); reserve the extra CEO/CFO weighting for solo
+    buys. Indirect holdings (trusts, family accounts) count the same as direct.
+  - **Net-purchase-ratio and don't-chase caution (added 2026-07-10, 2026 JRFM
+    cross-industry study, 2005–2025)**: before scoring, net the buy against ALL
+    insider sales at the same company over the trailing month — the mere
+    existence of a buy predicts nothing (buy/sell dummy tests insignificant);
+    net intensity carries the signal. A large buy in a month dominated by other
+    insiders' selling is weak. And an extreme, headline-grabbing buy cluster
+    that has already moved the stock can mark short-term risk-adjusted
+    reversal (top-quartile buy-intensity months showed −2%/3mo, −4%/6mo
+    risk-adjusted alpha) — don't pay up after the cluster has already run.
+  - **Industry weighting (same JRFM study)**: insider buys at BANKS/regulated
+    financials carry the strongest documented predictive content (+0.4%/3mo,
+    +0.6%/6mo per unit of net buy intensity, 1% significance); buys at large,
+    heavily-covered TECH names carry approximately zero incremental signal
+    (the industry interaction fully offsets the effect); utilities are
+    mixed/unstable. Nudge conviction up ~1 for a qualifying discretionary buy
+    at a bank/financial; nudge down ~1 for an otherwise-identical buy at a
+    heavily-covered mega-cap tech name.
+  - **Horizon (both sources)**: the insider-buy edge measured on follower-
+    visible data is ~zero at the 1-month horizon and accrues over 3–6 months.
+    For a position whose ONLY qualifying signal is a Form 4 buy, set
+    planned_hold_days toward the 30–60 day end, never a 1–7 day swing hold.
+  - **Expect momentum-screen failure (Jeng–Metrick–Zeckhauser)**: insiders are
+    contrarian — they typically buy after ~2% relative declines, in value names
+    with weak momentum. A legitimate Strategy A Form 4 candidate will usually
+    FAIL Strategy B's momentum screens; that is expected and not disqualifying
+    for A (convergence remains a bonus, never a prerequisite).
 - **Congress:** high when multiple members, or members on a relevant committee, buy the
   same name recently; treat single small disclosures as weak. Layer in the field-level
   read above (transaction type, asset type, range-code size, disclosure lag,
@@ -272,6 +402,13 @@ trending up has better odds of continuing than a weak stock suddenly reversing.
   bid/ask spread (a small fraction of a percent of price) via `get_equity_quotes`.
   A wide spread on a name that otherwise passes the volume screen is a sign of
   effectively thin liquidity despite the reported volume — treat it as a quality flag.
+- **EMA fast-read and stack order (added 2026-07-10)**: an EMA reacts to price
+  changes faster than the same-length SMA — for the short swing horizon compute a
+  ~20-day EMA alongside the SMAs, and treat the bullish stack
+  `close > 20-EMA > 20-SMA` as the confirmed uptrend state (the inverted stack is
+  the downtrend state). Keep the 50/200-day SMAs as the slower trend filter; the
+  combination of EMA (early signal) and SMA (trend confirmation) reads better
+  than either alone.
 
 **B1b. Volatility-compression watchlist trigger (supplementary sourcing method, owner
 instruction 2026-07-10).** Independent of the relative-strength scan, a name whose
@@ -281,6 +418,21 @@ recent low) is worth adding to the watchlist even before it breaks out: low vola
 reliably precedes high volatility, direction-agnostic. This is a way to *find*
 candidates earlier, not a standalone buy signal — a compression reading still needs
 B2/B3's volume-and-close confirmation once (if) it resolves into a breakout.
+- **Concrete detection rule (NR4/NR7, added 2026-07-10)**: a session whose
+  high–low range is the narrowest of the last 4–7 sessions, especially with the
+  open and close near the day's extremes, qualifies as compression; two or more
+  consecutive narrow-range days compress further and tend to precede a larger
+  breakout. The tentative trigger is a break of the narrow candle's high, with
+  the candle's low as the natural invalidation — still subject to B2/B3
+  volume-and-close confirmation.
+- **Keep the watchlist wide (added 2026-07-10)**: good setups take time to line
+  up, so qualifying trades are naturally infrequent — carry a larger basket of
+  monitored names rather than forcing a marginal buy from a thin candidate list.
+  More names watched, same strict trigger (this dovetails with the
+  research-first-SPY-last rule: the answer to "nothing qualifies" is a bigger
+  watchlist next cycle, not a looser checklist this cycle). An RSI recovering up
+  through 30 after a washout is a valid reason to ADD a name to this watchlist
+  for later re-checks — it is never an entry signal by itself (B9).
 
 **B2. Volume confirmation.** Today's volume ≥ 1.5–2× the average daily volume
 (e.g. 2.5M today vs 1M average = institutions likely buying). A move without volume
@@ -289,6 +441,10 @@ consolidating (quiet, tightening range) — don't penalize a candidate for low v
 during that phase. The requirement is a volume *expansion specifically at the
 breakout itself*; declining volume into the base and a sharp pickup on the breakout
 day together are a stronger combination than steady volume throughout.
+- **Computable accumulation proxies (added 2026-07-10)**: volume-flow indicators —
+  OBV (on-balance volume), Money Flow Index, Chaikin Money Flow — rising alongside
+  price give a checkable "institutions likely buying" read that supplements the
+  raw volume-ratio test here and the ownership/upgrade evidence in B6.
 
 **B3. Breakout from consolidation.** Require a **close** above (not just an intraday
 poke through) a well-defined multi-week range on above-average volume (e.g. three
@@ -306,6 +462,32 @@ after a stock has already run 20%.
   and holds is a legitimate second entry, not just the initial breakout candle itself —
   useful when the first move was missed. Confluence with a rising moving average or a
   Fibonacci retracement level at the same price strengthens this entry further.
+- **Pattern boundaries count as "well-defined resistance" (added 2026-07-10)**: the
+  flat top of an ascending triangle, a bull-flag channel after a sharp advance,
+  the upper trendline of a falling wedge (converging down-sloping trendlines with
+  volume declining through the pattern — a bullish breakout pattern; natural stop
+  just below the lower trendline), or the neckline of a double-bottom / inverse
+  head-and-shoulders are all breakout-eligible under the same volume-and-close
+  confirmation. Flags are legitimately short (days, not weeks) — the one
+  exception to preferring multi-week bases.
+- **Classic patterns out-test candlesticks (added 2026-07-10, cited mid/small-cap
+  pattern study)**: classic price patterns (triangles, wedges, head-and-shoulders,
+  double tops/bottoms) tested at roughly an 80% success rate vs. ~72% for
+  candlestick patterns — the quantitative reason pattern breakouts earn the full
+  2-point B13 breakout weight while candles stay a 1-point supporting bonus (B3b).
+- **Moving-average bounce as a second-entry class (added 2026-07-10)**: in an
+  established uptrend, a pullback that tags a rising key moving average (20-day
+  EMA or 50-day SMA) and bounces — the MA itself acting as support — is a
+  legitimate short-term entry class of its own, not merely confluence for a
+  horizontal-level retest. Same standards as any entry: a bullish close off the
+  level, volume, and the ADX ≥ 25 gate.
+- **Tranche the pullback entry (added 2026-07-10)**: pullback depth is unknowable
+  in advance — when entering on a role-reversal retest, splitting the planned
+  position into 2–3 parts with resting limit buys at successive supports (e.g.
+  the 20-day MA, the broken breakout level, the ~50% retracement of the prior
+  advance) lowers risk and raises fill odds vs. one all-at-once order. All
+  tranches count as ONE position for the position caps and sizing rules; record
+  the blended cost basis in the ledger.
 
 **B3b. Candlestick confirmation (supporting signal only, owner instruction
 2026-07-10).** A bullish reversal/continuation candle (e.g. hammer, bullish engulfing,
@@ -316,6 +498,15 @@ can mean the opposite thing depending on which kind of trend it follows (e.g. a
 "hammer" after a decline is bullish; the same shape after an advance is a bearish
 "hanging man" and argues against a fresh long). Treat this as a minor scoring bonus
 (B13), never as a standalone reason to buy.
+- **Mechanics (added 2026-07-10)**: an engulfing pattern is stronger the more prior
+  candles its body covers; a long-shadow reversal candle needs the shadow ≥ 2× the
+  real body (at a support retest, bullish); the signal candle must CLOSE before it
+  counts — never act on a still-forming candle — and a reversal candle is stronger
+  when the NEXT candle confirms in its direction (prefer waiting for that
+  confirming close before awarding the B13 point). Additional recognized bullish
+  patterns: piercing line, three white soldiers, bullish harami, dragonfly doji,
+  inverted hammer, rising three methods. A plain doji by itself is indecision —
+  neutral, no B13 credit in either direction.
 
 **B4. News catalyst.** Most large 1–2 week moves have one: beat-and-raise earnings,
 new contracts, FDA approvals, AI announcements, analyst upgrades, strong guidance,
@@ -330,6 +521,11 @@ holds the gain.
   FOMC rate decision, a CPI/inflation print, or a jobs (NFP-equivalent) report, since
   these can whipsaw the whole market regardless of the individual stock's setup. Sit
   out rather than hold a brand-new position through known event risk.
+- **Session-quality additions (added 2026-07-10)**: also avoid fresh entries in
+  thin sessions around market holidays and on days with major scheduled
+  central-bank speeches, and never enter immediately after a violent
+  one-directional swing in either the name or the broad market — let price
+  settle and re-form a level first.
 
 **B6. Institutional/insider accumulation.** Rising institutional ownership, large
 block trades, multiple analyst upgrades in a short window, insider buying (especially
@@ -353,7 +549,10 @@ news, price up 2–5% premarket, strong continuation after the open. Do not chas
 names already up 15–20% premarket.
 
 **B9. RSI.** For swing entries prefer RSI 55–70 (momentum strengthening, not yet
-overextended). Do not buy just because RSI < 30.
+overextended). Do not buy just because RSI < 30. Score the slope, not just the
+level: a *rising* RSI entering or moving through the 55–70 band (recovering
+momentum) is the preferred shape — a flat or falling RSI that merely sits in-band
+gets no credit (and RSI below 50 gets no momentum credit at all).
 - **RSI > 70 is a caution flag, not extra confirmation (owner instruction
   2026-07-10)**: standard technical-analysis framing treats RSI above 70 as a warning
   that "buyers' steam is potentially running out," i.e. a signal of trend maturity/
@@ -361,9 +560,40 @@ overextended). Do not buy just because RSI < 30.
   well above 70, don't read that as a stronger signal than one sitting in the 55–70
   band; if anything, tighten the stop, size a bit smaller, or wait for a pullback
   toward the role-reversal support level (B3) instead of chasing further.
+- **Adaptive threshold in persistent trends (added 2026-07-10)**: if a strong
+  name's RSI keeps tagging 70 while price keeps trending cleanly higher (the 70
+  prints are not producing pullbacks), recalibrate the caution line toward 80
+  for that ticker instead of mechanically flagging every 70 print — the
+  strongest trends live overbought for extended stretches. The inverse NEVER
+  applies to entries: oversold-bounce buying stays banned; an RSI recovering up
+  through 30 at most earns a spot on the B1b watchlist for later re-checks
+  under the full checklist.
 
 **B10. MACD.** Bullish setup: MACD crossing above its signal line + histogram turning
 positive + price breaking above resistance, together.
+- **Zero-line context (added 2026-07-10)**: a bullish MACD/signal cross occurring
+  ABOVE the zero line is a trend-continuation signal and fits Strategy B's momentum
+  thesis; a cross below zero is a countertrend/bottoming signal — weaker for this
+  system, so don't award the B13 MACD point for a below-zero cross unless the
+  breakout/volume criteria (B2/B3) are independently strong.
+- **Parameters and histogram trend (added 2026-07-10)**: compute MACD the standard
+  way so cycles are comparable — MACD line = 12-day EMA − 26-day EMA, signal =
+  9-day EMA of the MACD line, histogram = MACD − signal. Prefer 2+ consecutive
+  RISING histogram bars around the cross over a single crossover bar (one-bar
+  crosses whipsaw); wide histogram bars = strong momentum, and a visibly
+  shrinking histogram is momentum fading even before the lines cross — an exit
+  tell on held winners (Step 1) and a reason to withhold the B13 MACD point at
+  entry. Crossovers that conform to the prevailing trend are the reliable ones.
+- **Stochastic as a paired confirmation (added 2026-07-10, optional)**: the
+  stochastic oscillator (%K = where today's close sits within the last 14
+  sessions' high–low range, 0–100; %D = 3-day SMA of %K; 80/20 bands) measures
+  something MACD doesn't (close-location-in-range vs. moving-average
+  convergence), so the two confirming together is stronger than either alone.
+  Use it ONLY in its momentum-confirming form — %K rising up through 50, or a
+  %K/%D upcross in the direction of an ADX-confirmed trend. Never use its
+  oversold-bounce form (buying a sub-20 upcross) for entries — that is
+  mean-reversion, the opposite of this system — and remember short lookbacks
+  throw false signals in choppy conditions.
 
 **B11. Overall market regime.** Before any Strategy B buy, check that the S&P 500 and
 NASDAQ Composite are above their 20-day MAs, making higher highs, with healthy
@@ -401,6 +631,15 @@ stop in the ledger. NOTE: the min-hold rule in Step 1 still governs — the reco
 stop/target are acted on only once the position is at least 1 full calendar day old
 (never same-day); the planned_hold_days and −15% hard stop from the base strategy
 still apply.
+- **3% max capital-at-risk per trade (added 2026-07-10, hard money-management
+  rule)**: capital at risk = position size × distance from entry to stop, and it
+  must stay ≤ 3% of total account value: (position % of account) ×
+  (entry-to-stop %) ≤ 3%. The existing sizing extremes (20% position × −15%
+  hard stop) sit exactly at the 3.0% boundary, so this binds precisely when a
+  wide technical stop pairs with a large conviction size — e.g. a 15% position
+  can only carry a stop up to 20% away, and a stop 25% away caps the position
+  at 12%. If the planned stop would risk more than 3%, SHRINK THE POSITION —
+  never widen the stop to fit the size.
 - **Breakeven-stop ratchet (owner instruction 2026-07-10)**: once a position has moved
   in profit by roughly its initial risk (i.e. price has moved from entry toward target
   by about as much as entry-to-stop), update the recorded stop in the ledger to
@@ -410,6 +649,10 @@ still apply.
   it only tightens where the stop-loss check in Step 1 will trigger from here. This
   formalizes "let winners run, cut losers fast" as an explicit mechanical rule rather
   than a vague aspiration.
+- **Swing-low trail after breakeven (added 2026-07-10)**: once the stop is at
+  breakeven, on each subsequent cycle trail the recorded stop UP to the most recent
+  confirmed higher swing low (never down). Source discipline: "move stop to major
+  local lows; let your winners run."
 
 **Daily routine for Strategy B (30–45 min):** market trend check → relative-strength
 screen → drop names with earnings in the next few days → read news on survivors →
@@ -431,11 +674,16 @@ carry undefined/uncovered risk:**
 - **Long call** — bullish thesis, defined risk (max loss = premium).
 - **Long put** — bearish thesis or as a **protective put** against an existing owned
   equity position, defined risk (max loss = premium).
-- **Cash-secured put** — neutral-to-bullish income play; only if uncommitted cash
-  ≥ strike × 100 × contracts is available and can sit aside as collateral.
+- **Cash-secured put** — neutral-to-*slightly*-bullish income play (OIC outlook
+  label); only if uncommitted cash ≥ strike × 100 × contracts is available and can
+  sit aside as collateral. Reward is capped — do not use it to express a
+  strong-momentum (high Strategy B score) thesis; that's a long call's job.
 - **Covered call** — only against shares of that exact ticker already owned
   (≥ 100 shares); income against an existing thesis, caps further upside on those
-  shares.
+  shares. Same neutral-to-slightly-bullish outlook restriction as the
+  cash-secured put. **Premium income is NOT downside protection** — risk remains
+  "limited but substantial" (the full stock downside minus a sliver of premium);
+  Step 1's equity exit rules still govern the shares.
 - **Collar** — only against shares already owned: pair a protective put with a
   covered call to bracket risk on an existing position.
 
@@ -559,6 +807,13 @@ including the conviction and the public signal cited. For options, also log the
 structure, strike(s), expiration, and contracts. If the broker tools error
 repeatedly, log the failure and stop — never improvise around a broker error.
 
+**Per-signal outcome tracking (added 2026-07-10):** when a position closes, log
+its sector, holding horizon (days held), the signal(s)/score that justified the
+entry, and the realized P&L%. Over time this builds the account's own evidence of
+where the checklist actually earns (per-sector and per-horizon hit rates) — review
+it periodically and let it inform conviction scoring; signal efficacy is known to
+vary by industry, and the account's own record beats any borrowed backtest.
+
 ## Hard limits (never violate)
 
 - Public information only. No MNPI, ever.
@@ -578,5 +833,6 @@ repeatedly, log the failure and stop — never improvise around a broker error.
   equity name at entry; options sized per Step 3C (≤ 80% target / 100% hard cap of
   the remaining `options_cash_allocation`, never total account value, never oversized
   to fit a contract, never funded from equity capital or the SPY sweep); −15% stop
-  and 60-day max hold for equities; expiration
-  discipline (Step 1B) for options.
+  and 60-day max hold for equities; max 3% of total account value at risk per
+  trade (position size × entry-to-stop distance — shrink the size, never widen
+  the stop, per B14); expiration discipline (Step 1B) for options.
