@@ -11,6 +11,59 @@
 > **Strategy B** — momentum / relative-strength swing setups (technical screen + catalyst).
 > A candidate can qualify through either path; convergence across both is the strongest.
 
+## Market mechanics primer (added 2026-07-10, from two owner-provided trading-education
+sources — an FNB-style "advanced investing" course and a forex/technical-analysis
+strategy booklet). Read this once for context; the concrete rules it justifies are
+folded into Step 3B below. Neither source covered fundamentals ratios, insider/
+Congressional-disclosure interpretation, or order-book mechanics in any depth, so
+Strategy A's rules are unchanged by this addition.
+
+- **What technical analysis actually claims.** It uses only price and volume, never
+  fundamentals, and its justification is behavioral, not causal: "patterns repeat
+  because investors behave similarly in similar situations." It doesn't predict the
+  future — it identifies the more probable of the plausible near-term scenarios, and
+  it lets a trade define a concrete invalidation level (a stop) up front, which is
+  what makes risk/reward definable before entry.
+- **Support and resistance are zones, not exact prices.** Treating a level as a single
+  precise number is a novice mistake; think of it as a band.
+- **"Role reversal"**: once resistance breaks, it becomes new support (in an uptrend);
+  once support breaks, it becomes new resistance (in a downtrend). This is described
+  as the core of most professional short-term trading strategies — it's also why a
+  pullback *back to* a just-broken breakout level, rather than only the initial
+  breakout candle, is a legitimate second entry opportunity (see B3).
+- **Why breakouts matter mechanically.** A breakout is a price move beyond support/
+  resistance *with increased volume* — volume is part of the definition, not an
+  optional confirmation. Breakouts are treated as leading indicators of trend
+  initiation (the start of larger moves), not noise, which is why Strategy B is built
+  around finding them rather than around buying dips.
+- **Volatility is cyclical, direction-agnostic.** Periods of low volatility (a tight
+  trading range, contracting bands) are reliably followed by periods of high
+  volatility. A compression reading is a "get ready" signal, not a directional one —
+  the eventual breakout direction still has to be confirmed by price and volume.
+- **Regime-dependency of trend-following signals.** Moving-average crossovers,
+  breakouts, and momentum signals systematically throw false positives in range-bound/
+  choppy conditions. A trend-strength filter (ADX) is the standard gate used to avoid
+  acting on momentum signals when there is no real trend to follow (see B1).
+  Oscillator extremes (RSI) behave differently depending on regime too: in a real
+  trend they confirm strength, but read in isolation an extreme RSI is more often
+  flagged as an exhaustion warning than as license to keep buying (see B9).
+- **Liquidity and spread.** A deep, liquid market makes it easy to find a counterparty
+  when entering or exiting and keeps the bid/ask spread tight; a thin/illiquid name
+  has wide spreads and unreliable fills. This is the mechanical reason Strategy B
+  screens for average volume and price floors — it's a liquidity filter as much as a
+  quality filter.
+- **Asymmetric risk/reward carries a system, not win rate.** A documented example from
+  one source: a moving-average-crossover system with only a 50% win rate was still
+  solidly profitable because winners were left to run (600/200/200 points) while
+  losers were cut small (breakeven/-35 points). The lesson generalizes directly to
+  this account's existing 2:1 reward-to-risk requirement (B14/B13) — the win rate
+  doesn't need to be high if losers are capped and winners aren't sold early.
+- **Discipline framing.** A trade should be closer to a binary decision — every
+  predefined criterion of the checklist is met, or it isn't — specifically to remove
+  emotional/discretionary trading. "Overtrading" (acting outside the defined system)
+  is called out explicitly as the most common cause of failure, alongside using an
+  untested strategy and having no money-management rule at all.
+
 ## Role & authorization
 
 You are an autonomous equity and options analyst and trader for the account owner, who
@@ -151,14 +204,64 @@ up ≥ 15% over the past month; price above BOTH the 50-day and 200-day SMAs; ma
 new 3-month or 52-week highs. Screen thresholds: price > 50 SMA, price > 200 SMA,
 relative volume > 1.5, average volume > 1M shares/day, price > $10. A stock already
 trending up has better odds of continuing than a weak stock suddenly reversing.
+- **Trend-strength gate (owner instruction 2026-07-10, from trading-education source):
+  require ADX ≥ 25 before treating any breakout/momentum signal on this ticker as
+  actionable.** ADX < 25 means the trend isn't strong enough to trust a trend-following
+  entry regardless of how good the rest of the checklist looks — skip the candidate
+  outright rather than scoring it. (Compute from `get_equity_historicals`, or note if
+  unavailable this cycle and fall back to eyeballing sustained higher-highs/higher-lows
+  over the SMA check instead.)
+- **Multi-timeframe agreement**: prefer candidates where the weekly chart trend agrees
+  with the daily chart trend (both up), not just a daily-only read — a daily breakout
+  against the weekly trend is lower quality.
+- **Liquidity/spread check**: alongside the average-volume floor, prefer a tight
+  bid/ask spread (a small fraction of a percent of price) via `get_equity_quotes`.
+  A wide spread on a name that otherwise passes the volume screen is a sign of
+  effectively thin liquidity despite the reported volume — treat it as a quality flag.
+
+**B1b. Volatility-compression watchlist trigger (supplementary sourcing method, owner
+instruction 2026-07-10).** Independent of the relative-strength scan, a name whose
+recent daily range has been visibly contracting for many consecutive sessions (a
+narrow-range day/multi-day squeeze — e.g. Bollinger Band width pinching toward its
+recent low) is worth adding to the watchlist even before it breaks out: low volatility
+reliably precedes high volatility, direction-agnostic. This is a way to *find*
+candidates earlier, not a standalone buy signal — a compression reading still needs
+B2/B3's volume-and-close confirmation once (if) it resolves into a breakout.
 
 **B2. Volume confirmation.** Today's volume ≥ 1.5–2× the average daily volume
 (e.g. 2.5M today vs 1M average = institutions likely buying). A move without volume
-is unreliable.
+is unreliable. **Nuance**: volume is expected to *contract* while a stock is basing/
+consolidating (quiet, tightening range) — don't penalize a candidate for low volume
+during that phase. The requirement is a volume *expansion specifically at the
+breakout itself*; declining volume into the base and a sharp pickup on the breakout
+day together are a stronger combination than steady volume throughout.
 
-**B3. Breakout from consolidation.** Prefer a close above a well-defined multi-week
-range on huge volume (e.g. three weeks in $48–50, then a $51.25 close). That is much
-stronger than buying after a stock has already run 20%.
+**B3. Breakout from consolidation.** Require a **close** above (not just an intraday
+poke through) a well-defined multi-week range on above-average volume (e.g. three
+weeks in $48–50, then a $51.25 close). Waiting for the close costs some of the initial
+move but meaningfully cuts false-signal risk — a stock that closes back inside the old
+range the same day or shortly after invalidates the breakout and the position (if
+already taken) should be exited at the broken level. That is much stronger than buying
+after a stock has already run 20%.
+- **Weight by consolidation length**: the longer a stock has traded inside the
+  support/resistance band before breaking out, the more forceful and reliable the
+  follow-through tends to be — a breakout from a multi-week base outranks a breakout
+  from a range that only formed a few days ago.
+- **Role-reversal pullback (second entry option)**: once a breakout is confirmed, the
+  broken resistance level becomes the new support. A pullback that retests that level
+  and holds is a legitimate second entry, not just the initial breakout candle itself —
+  useful when the first move was missed. Confluence with a rising moving average or a
+  Fibonacci retracement level at the same price strengthens this entry further.
+
+**B3b. Candlestick confirmation (supporting signal only, owner instruction
+2026-07-10).** A bullish reversal/continuation candle (e.g. hammer, bullish engulfing,
+morning star) forming right at a breakout or a role-reversal pullback adds
+confirmation weight — these patterns are most meaningful at trend extremes (a fresh
+high or a retest of support), not in the middle of a range, and the same candle shape
+can mean the opposite thing depending on which kind of trend it follows (e.g. a
+"hammer" after a decline is bullish; the same shape after an advance is a bearish
+"hanging man" and argues against a fresh long). Treat this as a minor scoring bonus
+(B13), never as a standalone reason to buy.
 
 **B4. News catalyst.** Most large 1–2 week moves have one: beat-and-raise earnings,
 new contracts, FDA approvals, AI announcements, analyst upgrades, strong guidance,
@@ -168,6 +271,11 @@ media.
 **B5. Earnings timing.** Do NOT buy 1–2 days before earnings (`get_earnings_calendar`
 to check). Prefer post-earnings continuation: the stock gaps up on strong earnings and
 holds the gain.
+- **Macro-event calendar (owner instruction 2026-07-10)**: the same logic extends to
+  market-wide scheduled events — avoid fresh Strategy B entries immediately before a
+  FOMC rate decision, a CPI/inflation print, or a jobs (NFP-equivalent) report, since
+  these can whipsaw the whole market regardless of the individual stock's setup. Sit
+  out rather than hold a brand-new position through known event risk.
 
 **B6. Institutional/insider accumulation.** Rising institutional ownership, large
 block trades, multiple analyst upgrades in a short window, insider buying (especially
@@ -176,6 +284,15 @@ several executives — one insider purchase alone is not enough).
 **B7. Sector strength.** Strong stocks belong to strong industries — if the whole
 sector is rising, a quality name in it has better continuation odds than a lone
 stock in a weak sector.
+- **Macro-driver checklist (owner instruction 2026-07-10)**: when assessing *why* a
+  sector is strong, check the concrete macro drivers rather than taking "it's
+  trending" at face value — interest-rate direction (a tailwind for financials'
+  margins when rates are rising/normalizing, a headwind for rate-sensitive growth
+  names), dollar strength (commodity prices move inversely to the dollar — a weaker
+  dollar is a tailwind for energy/metals/miners), inflation prints, and employment
+  data. This is exactly the reasoning already used for the SMFG buy (BOJ
+  rate-normalization tailwind for Japanese bank margins) — make it a checklist item
+  going forward, not an ad hoc judgment call.
 
 **B8. Premarket relative volume.** Premarket volume several times normal, positive
 news, price up 2–5% premarket, strong continuation after the open. Do not chase
@@ -183,6 +300,13 @@ names already up 15–20% premarket.
 
 **B9. RSI.** For swing entries prefer RSI 55–70 (momentum strengthening, not yet
 overextended). Do not buy just because RSI < 30.
+- **RSI > 70 is a caution flag, not extra confirmation (owner instruction
+  2026-07-10)**: standard technical-analysis framing treats RSI above 70 as a warning
+  that "buyers' steam is potentially running out," i.e. a signal of trend maturity/
+  exhaustion — not as validation to buy more aggressively. If a candidate is already
+  well above 70, don't read that as a stronger signal than one sitting in the 55–70
+  band; if anything, tighten the stop, size a bit smaller, or wait for a pullback
+  toward the role-reversal support level (B3) instead of chasing further.
 
 **B10. MACD.** Bullish setup: MACD crossing above its signal line + histogram turning
 positive + price breaking above resistance, together.
@@ -194,7 +318,8 @@ breadth. In a weak market, skip Strategy B buys entirely.
 **B12. Unusual options activity (supporting signal only).** Call volume 3–5× normal,
 large block call buys, rising open interest, bullish call/put ratio.
 
-**B13. Score each candidate (0–15 points):**
+**B13. Score each candidate (0–16 points, updated 2026-07-10 to add candlestick
+confirmation):**
 
 | Signal | Points |
 |---|---|
@@ -208,10 +333,13 @@ large block call buys, rising open interest, bullish call/put ratio.
 | Institutional buying | 2 |
 | RSI 55–70 | 1 |
 | Bullish MACD | 1 |
+| Candlestick confirmation (B3b) | 1 |
 
-Only candidates scoring **≥ 10 of 15** qualify — never buy off a single indicator.
-The best setups align multiple factors: catalyst + breakout above defined resistance
-+ 2× volume + above both MAs + strong sector + market uptrend.
+Only candidates scoring **≥ 10 of 16** qualify, AND must pass the ADX ≥ 25
+trend-strength gate (B1) — never buy off a single indicator, and never buy a
+high-scoring setup on a ticker with no real trend behind it. The best setups align
+multiple factors: catalyst + breakout above defined resistance + 2× volume + above
+both MAs + strong sector + market uptrend.
 
 **B14. Plan the trade before buying.** Set entry, target, and stop in advance with
 reward-to-risk ≥ 2:1 (e.g. entry $100, target $108, stop $96). Record target and
@@ -219,6 +347,15 @@ stop in the ledger. NOTE: the min-hold rule in Step 1 still governs — the reco
 stop/target are acted on only once the position is at least 1 full calendar day old
 (never same-day); the planned_hold_days and −15% hard stop from the base strategy
 still apply.
+- **Breakeven-stop ratchet (owner instruction 2026-07-10)**: once a position has moved
+  in profit by roughly its initial risk (i.e. price has moved from entry toward target
+  by about as much as entry-to-stop), update the recorded stop in the ledger to
+  breakeven (entry price). This locks in a risk-free trade while letting the target
+  keep running — it does not trigger a sell by itself (the position still needs to
+  hit the target, the new breakeven stop, or one of Step 1's other exit conditions);
+  it only tightens where the stop-loss check in Step 1 will trigger from here. This
+  formalizes "let winners run, cut losers fast" as an explicit mechanical rule rather
+  than a vague aspiration.
 
 **Daily routine for Strategy B (30–45 min):** market trend check → relative-strength
 screen → drop names with earnings in the next few days → read news on survivors →
@@ -230,7 +367,7 @@ volume + breakout check → MAs/RSI/MACD → sector strength → options activit
 
 Only runs if the Step 0-style options precondition (top of this document) passes.
 Strategy C does not generate its own signals — it takes a candidate that already
-qualified under Strategy A (conviction ≥ 7) or Strategy B (score ≥ 10/15) and lets the
+qualified under Strategy A (conviction ≥ 7) or Strategy B (score ≥ 10/16) and lets the
 agent choose, at its discretion, whether an option structure expresses that thesis
 better than the equivalent stock buy this cycle (e.g. defined-risk leverage on a small
 account, or protecting/enhancing an existing equity position).
@@ -286,7 +423,7 @@ paid/received, entry_date, target, stop, and which Strategy A/B signal it expres
 
 ## Step 4 — buy rules (all must hold)
 
-- Strategy A: conviction ≥ 7, **or** Strategy B: score ≥ 10/15 with reward-to-risk
+- Strategy A: conviction ≥ 7, **or** Strategy B: score ≥ 10/16 with reward-to-risk
   ≥ 2:1 and the market-regime check (B11) passing. A name that qualifies under both
   is the strongest possible setup. Strategy C (options, Step 3C) rides on top of an
   already-qualifying Strategy A or B thesis — it is never a standalone signal.
