@@ -53,7 +53,17 @@ reconstruct entry dates from `get_equity_orders` fill history). For each open po
   - days held ≥ 60, or
   - current price ≤ 85% of average buy price (−15% stop loss), or
   - the ledger records a Strategy B target/stop and current price has reached the
-    target or fallen to the stop.
+    target or fallen to the stop, or
+  - **research shows a material bearish development that undermines the original
+    thesis (owner instruction 2026-07-10)** — check recent news/analyst
+    actions/technicals for each held position; sell early on a concrete, cited
+    deterioration such as an earnings miss, a downgrade with a new price target
+    below the current price, a negative FDA/regulatory outcome, a guidance cut, a
+    large cluster of insider selling, or a broken key technical level (e.g. below
+    both 50- and 200-day SMAs on volume). This is not license to churn on routine
+    volatility, a single modest insider sale, or short-term profit-taking impulses —
+    require the same rigor as a Strategy A/B buy signal, just in reverse. Log the
+    specific finding that drove the sell (or the finding that did NOT warrant one).
 - Remove sold tickers from the ledger.
 
 ## Step 1B — manage OPTION exits (before any new options entry)
