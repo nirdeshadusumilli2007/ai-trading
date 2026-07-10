@@ -37,7 +37,9 @@ ATOM_URL = (
     "?action=getcurrent&type=4&company=&dateb=&owner=include&count=100&output=atom"
 )
 ATOM_NS = {"a": "http://www.w3.org/2005/Atom"}
-USER_AGENT = os.environ.get("EDGAR_USER_AGENT", "ai-trading-agent contact@example.com")
+USER_AGENT = os.environ.get(
+    "EDGAR_USER_AGENT", "Nirdesh Adusumilli adusumn@rose-hulman.edu"
+)
 
 DATA_DIR = Path(__file__).resolve().parent / "data"
 SEEN_FILE = DATA_DIR / "edgar_seen.json"
