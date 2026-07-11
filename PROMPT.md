@@ -104,6 +104,27 @@ instruction 2026-07-10):**
 2. `get_portfolio` for account 953941390. If total value < $10 and there are no
    positions, log "unfunded — skipped" and stop.
 
+## Step 0B — pre-plan check (owner instruction 2026-07-11)
+
+Every trading run begins by reading `data/daily_plan.md` — the pre-plan written at the
+end of the previous run (Step 5B). For each item in it:
+
+1. **Re-verify before acting.** Check each planned trigger/signal against FRESH data
+   (live quote, technicals, news) — the plan is a set of hypotheses to re-test, never
+   pre-authorized orders. A trigger that looks fired but no longer holds on fresh data
+   is a skip; log the divergence.
+2. The plan's held-position notes feed directly into Step 1 (exits still run before
+   any new research or buying).
+3. If the file is missing or stale (not written on the most recent prior trading day),
+   log that and run the standard full scan without it.
+
+**Mandatory run order, every trading day:** pre-plan check (0B) → exits on all held
+positions, equities and options (1/1B) → fresh Strategy A + B research for the week's
+candidates (2–3C) → and only after ALL of that, buy orders (4) → sweep (4b) →
+log (5) → write the next session's pre-plan (5B). Buy orders are always the last
+trading action of the run — never placed before the exit review and the day's
+research are complete.
+
 ## Step 1 — manage exits FIRST (this enforces "no day trading")
 
 Read the position ledger (`data/robinhood_positions.json` if present; otherwise
@@ -813,6 +834,24 @@ entry, and the realized P&L%. Over time this builds the account's own evidence o
 where the checklist actually earns (per-sector and per-horizon hit rates) — review
 it periodically and let it inform conviction scoring; signal efficacy is known to
 vary by industry, and the account's own record beats any borrowed backtest.
+
+## Step 5B — write the next session's pre-plan (owner instruction 2026-07-11)
+
+End every run by rewriting `data/daily_plan.md` for the next trading session:
+
+- **Held positions**: for each, the days-held count as of the next session, its
+  target/stop, and what specifically would force a sell that day (planned-hold
+  expiry, stop/target proximity, pending catalyst, thesis-risk to re-check).
+- **Watchlist**: each candidate with a concrete, checkable trigger (a level to close
+  above, a volume condition, an ADX/SMA state) that would make it scoreable — never
+  a bare "buy X" note. Names whose trigger has gone stale get dropped.
+- **Scheduled events** gating entries: earnings dates for held/watched names,
+  FOMC/CPI/jobs prints, market holidays.
+- **Carry-over notes**: pending splits, unsettled cash, options preconditions,
+  reconciliations needed.
+
+Commit `data/` changes (plan included) per CLAUDE.md so the plan survives ephemeral
+sessions.
 
 ## Hard limits (never violate)
 
