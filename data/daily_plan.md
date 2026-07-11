@@ -43,12 +43,39 @@ Options: `options_cash_allocation` = $20.00. Check `option_level` on account
   listing has settled; still needs a real breakout + volume expansion.
 - **U** (Unity, $31.43): above 20/50/100-day MAs; trigger = close above the
   200-day SMA (~2.3% overhead Friday), which clears the B1 dual-SMA fail.
+- **ZETA** ($21.49, added 2026-07-11 owner request): strongest of the batch —
+  above 20/50/200-day MAs, RSI 57.5, +7.8%/1mo, Palantir Foundry partnership
+  (6/23, mgmt cites >$100M annual revenue potential), OpenAI ad deal (May),
+  BofA PT $28 / B. Riley PT $30 / Freedom Buy init, 12% short interest,
+  19 straight beat-and-raise quarters. Scored ~7–9/16 Friday; **disqualified
+  by ADX 19.7 < 25**. Trigger = ADX rising through 25 + volume-confirmed
+  (≥1.5–2×) close above the ~$22 swing-high area. Sector (adtech) weak/
+  bifurcated — no sector point. Earnings ~**8/4** (unconfirmed) — no fresh
+  entry ~8/2–8/4; re-verify the date.
+- **ZLAB** ($20.49, added 2026-07-11 owner request): China biopharma riding a
+  hot XBI (+23%/1mo) but LAGGING it (+18.7%); V-recovery off $16, no defined
+  base. Above 50-day; sitting ON the 200-day (sources disagree $18.1–20.9).
+  Scored ~6/16. Catalysts on file: NMPA TIVDAK approval 6/8, EMA orphan
+  designation for DLL3 ADC 6/16. Insider read mixed: only buy is a $33K
+  10b5-1 director buy 7/1; CEO exercised-and-sold 150K sh (~$3M) in May.
+  Liquidity borderline (20-day avg vol ~948K < 1M floor — recheck). Trigger =
+  confirmed close above the 200-day AND the June swing high on expanding
+  volume with ADX ≥ 25. Earnings ~**8/6** (unconfirmed).
+- **NOW** (ServiceNow $107.71, added 2026-07-11 owner request): rebound story,
+  not momentum — scored ~3–5/16; above 50-day ($101.83) but 18% below 200-day
+  ($130.82), +1.6%/1mo, weakest sector (enterprise software), no insider/
+  Congress signals. Catalysts on file: Guggenheim upgrade to Buy PT $125
+  (7/2), Truist PT $130, Accenture AI-security partnership (6/29). Earnings
+  **7/22 AMC** — no fresh entry 7/20–7/22. Trigger = post-earnings
+  gap-up-and-hold continuation (B5 preferred shape) after 7/22, or a
+  volume-confirmed reclaim of the 200-day (~$131).
 
 ## 3. Scheduled events gating entries (Step B5)
 
 - Check Monday's macro calendar at run start (CPI/FOMC/jobs — verify this
   week's dates before any fresh B entry).
-- Earnings: SOFI 7/29, SMFG 7/31, NVDA 8/26.
+- Earnings: **NOW 7/22 AMC**, SOFI 7/29, SMFG 7/31, ZETA ~8/4 (unconfirmed),
+  ZLAB ~8/6 (unconfirmed), NVDA 8/26.
 
 ## 4. Carry-over notes
 
